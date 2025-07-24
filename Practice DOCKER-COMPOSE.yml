@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+
+  mysql:
+    image: mysql:latest
+     environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: devops
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+      - ./message.sql:/docker-entrypoint-initdb.d/message.sql 
+    port: 
+       - "3306:3306"
+    networks:
+       - two-tier-nw
+    container_name: MYSQL
+     
+
+    flaskapp:
+      build:
+      context: .
+    port: 
+       - "5000:5000"
+      restart: always
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DB: devops
+    depends_on:
+      - mysql 
+    networks:
+       - two-tier-nw
+       container_name: Flaskapp
+      
