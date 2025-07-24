@@ -17,6 +17,12 @@ services:
     networks:
        - two-tier-nw
     container_name: MYSQL
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
      
 
     flaskapp:
@@ -32,7 +38,16 @@ services:
       MYSQL_DB: devops
     depends_on:
       - mysql 
+     healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s 
     networks:
        - two-tier-nw
        container_name: Flaskapp
+
+      networks:
+        - two-tier-nw
       
